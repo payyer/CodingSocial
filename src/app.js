@@ -12,12 +12,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // -------- Init DB ----------
-require('./db/init.mongoose')
+require('./db/init.mongodb')
 const { checkOverload } = require("./helpers/check.connect")
 checkOverload()
 
 // ------ Init routes --------
-
+app.use("", require('./routes/index'))
 // ----- Handling error ------
 
 module.exports = app
