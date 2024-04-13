@@ -3,7 +3,7 @@ const JWT = require('jsonwebtoken')
 const createTokens = async (payload, privateKey, publicKey) => {
     try {
         // Create accessToken
-        const accessToken = await JWT.sign(payload, privateKey, {
+        const accessToken = await JWT.sign(payload, publicKey, {
             expiresIn: "2 days"
         })
 
@@ -26,7 +26,6 @@ const createTokens = async (payload, privateKey, publicKey) => {
         console.log(err.message)
         return err.message
     }
-
 }
 
 module.exports = { createTokens }

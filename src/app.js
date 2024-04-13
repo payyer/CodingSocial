@@ -1,10 +1,12 @@
 const express = require("express")
 const morgan = require("morgan")
 const compression = require("compression")
+const cors = require('cors')
 const helmet = require("helmet")
 const app = express()
 
 // ----- Init middleware -----
+app.use(cors())
 app.use(morgan("dev"))
 app.use(helmet())
 app.use(compression())
@@ -18,6 +20,22 @@ checkOverload()
 
 // ------ Init routes --------
 app.use("", require('./routes/index'))
+
 // ----- Handling error ------
+app.use((req, res, next) => {
+    const error = new Error('Not Found')
+    error.status = 404
+    next(error)
+})
+
+app.use((error, req, res, next) => {
+    // Nếu không bắt được lỗi thì trả về 500
+    const statusCode = error.status || 500
+    return res.status(statusCode).json({
+        status: 'error',
+        code: statusCode,
+        message: error.message || 'Internal Server Error'
+    })
+})
 
 module.exports = app

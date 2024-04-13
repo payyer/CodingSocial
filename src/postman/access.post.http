@@ -3,9 +3,10 @@
 ### signup
 POST {{url_dev}}user/signup
 Content-Type: application/json
+bearer: 7b0b074e2143c884b50a44e0ac03a38cba5a849b31f0772cc931e7fb381fb76077c8fdac96daae5bbeb38ddea610e28cf99c84f20cddda17ab41424733785af7
 
 {
     "name": "Lê Quốc Anh ",
-    "email" : "email4@gmail.com",
+    "email" : "1@gmail.com",
     "password": "1q2w3E*"
 }
