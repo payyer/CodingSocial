@@ -1,6 +1,6 @@
 const JWT = require('jsonwebtoken')
 
-const createTokens = async (payload, privateKey, publicKey) => {
+const createTokenPair = async (payload, privateKey, publicKey) => {
     try {
         // Create accessToken
         const accessToken = await JWT.sign(payload, publicKey, {
@@ -28,4 +28,4 @@ const createTokens = async (payload, privateKey, publicKey) => {
     }
 }
 
-module.exports = { createTokens }
+module.exports = { createTokenPair }
