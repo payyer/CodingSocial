@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const KeyTokenService = require('./keyToken.service');
 const { getInforData } = require('../utils');
 const { createTokens } = require('../auth/authUtils');
-const { ConflictError } = require('../core/error.reponse');
+const { ConflictError, BadRequestError } = require('../core/error.reponse');
 const RoleUser = {
     ADMIN: "ADMIN",
     USER: "USER",
@@ -39,31 +39,23 @@ class AccessService {
             const keyStore = await KeyTokenService.createKeyToken(newUser._id, privateKey, publicKey)
             console.log({ keyStore });
 
-            if (!keyStore) {
-                return {
-                    code: "xxxx",
-                    message: "PublicKeyString Error",
-                };
-            }
+            if (!keyStore) throw new BadRequestError("Can't create Key store")
+
 
             // Create Token send to client
             const tokens = await createTokens({ userId: newUser._id, email }, privateKey, publicKey);
             console.log("Created Token Success: ", tokens);
 
             return {
-                code: 201,
-                metadata:
-                {
-                    user: getInforData({
-                        fields: ["_id", "name", "email"],
-                        object: newUser
-                    }),
-                    tokens
-                }
+                user: getInforData({
+                    fields: ["_id", "name", "email"],
+                    object: newUser
+                }),
+                tokens
             }
         }
         return {
-            code: 200,
+            code: 400,
             metadata: null,
         };
     }
