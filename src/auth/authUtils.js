@@ -1,4 +1,13 @@
 const JWT = require('jsonwebtoken')
+const { ForbiddenError, NotFoundError, UnAuthorizedError } = require('../core/error.reponse')
+const KeyTokenService = require('../services/keyToken.service')
+const { asyncHandle } = require('../helpers/asyncHandler')
+
+const HEADER = {
+    API_KEY: 'x-api-key',
+    BEARER: 'bearer',
+    USER_CLIENT_ID: 'user-id'
+}
 
 const createTokenPair = async (payload, privateKey, publicKey) => {
     try {
@@ -27,5 +36,32 @@ const createTokenPair = async (payload, privateKey, publicKey) => {
         return err.message
     }
 }
+const authentication = asyncHandle(async (req, res, next) => {
+    const userId = req.headers[HEADER.USER_CLIENT_ID]
+    if (!userId) throw new ForbiddenError("Invalid User Id Request")
 
-module.exports = { createTokenPair }
+    const keyStore = await KeyTokenService.findByUserId(userId)
+    if (!keyStore) throw new NotFoundError("Not Found Key Store!")
+
+    const accessToken = req.headers[HEADER.BEARER]
+    if (!accessToken) throw new ForbiddenError("Invalid AccessToken")
+
+    try {
+        // 5 -Check KeyStore with this user ID
+        const decodeUser = JWT.verify(accessToken, keyStore.publicKey, (error, decoded) => {
+            if (error) throw new ForbiddenError("Invalid Token")
+            return decoded
+        })
+
+        if (userId != decodeUser.userId) throw new UnAuthorizedError("Invalid User")
+        req.keyStore = keyStore
+        return next()
+
+    } catch (error) {
+        throw error
+    }
+
+})
+
+
+module.exports = { createTokenPair, authentication }

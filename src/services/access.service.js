@@ -6,6 +6,7 @@ const { getInfoData } = require('../utils');
 const { ConflictError, BadRequestError, NotFoundError, UnAuthorizedError } = require('../core/error.reponse');
 const UserService = require('./user.service');
 const { createTokenPair } = require('../auth/authUtils');
+const keytokenModel = require('../models/keytoken.model');
 const RoleUser = {
     ADMIN: "ADMIN",
     USER: "USER",
@@ -98,6 +99,12 @@ class AccessService {
             code: 400,
             metadata: null,
         };
+    }
+
+    static logout = async (keyStore) => {
+        const delKey = KeyTokenService.deleteById(keyStore._id)
+        console.log(delKey)
+        return delKey
     }
 }
 
