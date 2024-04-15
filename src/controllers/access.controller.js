@@ -18,9 +18,14 @@ class AccessController {
 
     logout = async (req, res, next) => {
         new SuccessResponse({
-            statusCode: 200,
             message: "Logout success!",
             metadata: await AccessService.logout(req.keyStore)
+        }).send(res)
+    }
+    handlerRefreshToken = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Token refreshed successfully",
+            metadata: await AccessService.handlerRefreshToken(req.body)
         }).send(res)
     }
 }

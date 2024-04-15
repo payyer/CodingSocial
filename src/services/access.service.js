@@ -3,10 +3,9 @@ const bcrypt = require('bcrypt')
 const crypto = require('crypto');
 const KeyTokenService = require('./keyToken.service');
 const { getInfoData } = require('../utils');
-const { ConflictError, BadRequestError, NotFoundError, UnAuthorizedError } = require('../core/error.reponse');
+const { ConflictError, BadRequestError, NotFoundError, UnAuthorizedError, ForbiddenError } = require('../core/error.reponse');
 const UserService = require('./user.service');
-const { createTokenPair } = require('../auth/authUtils');
-const keytokenModel = require('../models/keytoken.model');
+const { createTokenPair, verifyJWT } = require('../auth/authUtils');
 const RoleUser = {
     ADMIN: "ADMIN",
     USER: "USER",
@@ -106,6 +105,47 @@ class AccessService {
         console.log(delKey)
         return delKey
     }
+
+    static handlerRefreshToken = async ({ refreshToken }) => {
+        // Check this token was use?
+        const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
+        // if refreshToken is exsit in dbs?
+        // delete keyStore
+        if (foundToken) {
+            // decoded refresh token JWT to get userId and email
+            const { userId, email } = await verifyJWT(refreshToken, foundToken.privateKey)
+            await KeyTokenService.deleteByUserId(userId)
+            throw new ForbiddenError("Something wrong! Please relogin")
+        }
+
+        // check refesh token is exist? 
+        const holderToken = await KeyTokenService.findByRefreshToken(refreshToken)
+        if (!holderToken) throw new NotFoundError("Note found User match with refresh token")
+
+        const { userId, email } = await verifyJWT(refreshToken, holderToken.privateKey)
+        // check user is exist?
+        const foundUser = await UserService.findByEmail({ email });
+        if (!foundUser) throw new NotFoundError("User doesn't exits")
+
+        // create Token pair
+        const tokens = await createTokenPair({ userId, email }, holderToken.privateKey, holderToken.publicKey);
+
+        // update token
+        await holderToken.updateOne({
+            $set: {
+                refreshToken: tokens.refreshToken // update new refreshToken for user
+            },
+            $addToSet: {
+                refeshTokensUsed: refreshToken // add old refreshToken to list refreshTokenUsed
+            }
+        })
+
+        return {
+            user: { userId, email },
+            tokens
+        }
+    }
+
 }
 
 module.exports = AccessService

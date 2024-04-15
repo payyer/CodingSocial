@@ -6,6 +6,7 @@ class UserService {
     }) => {
         return await userModel.findOne({ email }).select(select).lean()
     }
+
 }
 
 module.exports = UserService

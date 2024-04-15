@@ -12,5 +12,6 @@ router.post('/user/signup', asyncHandle(accessController.signUp))
 router.use(authentication)
 
 router.delete('/user/logout', asyncHandle(accessController.logout))
+router.post('/user/handlerRefreshToken', asyncHandle(accessController.handlerRefreshToken))
 
 module.exports = router;
