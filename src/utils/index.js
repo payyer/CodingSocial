@@ -5,4 +5,9 @@ const getInfoData = ({ fields = [], object = {} }) => {
     return _.pick(object, fields);
 };
 
-module.exports = { getInfoData }
+// Generate random 6 number verification token 
+const generateVerificationToken = () => {
+    return Math.floor(100000 + Math.random() * 900000);
+}
+
+module.exports = { getInfoData, generateVerificationToken }

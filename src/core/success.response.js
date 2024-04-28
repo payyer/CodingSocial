@@ -24,7 +24,22 @@ class SuccessResponse {
 
 class CREATED extends SuccessResponse {
     constructor({ message, statusCode = StatusCode.CREATED, reasonStatusCode = ReasonStatusCode.CREATED, metadata }) {
-        super({ message, statusCode, reasonStatusCode, metadata })
+        super({ message, statusCode, reasonStatusCode, metadata });
+    }
+    send(res, headers = {}) {
+        return res
+            .status(this.status)
+            .cookie("acccess_token", this.metadata.tokens.accessToken, {
+                httpOnly: true,
+                secure: false
+            })
+            .cookie("refesh_token", this.metadata.tokens.refreshToken, {
+                httpOnly: true,
+                secure: false
+            })
+            .json(
+                this
+            )
     }
 }
 

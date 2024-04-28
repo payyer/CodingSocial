@@ -2,10 +2,11 @@ const userModel = require('../models/user.model')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto');
 const KeyTokenService = require('./keyToken.service');
-const { getInfoData } = require('../utils');
+const { getInfoData, generateVerificationToken } = require('../utils');
 const { ConflictError, BadRequestError, NotFoundError, UnAuthorizedError, ForbiddenError } = require('../core/error.reponse');
 const UserService = require('./user.service');
 const { createTokenPair, verifyJWT } = require('../auth/authUtils');
+const EmailService = require('./email.service');
 const RoleUser = {
     ADMIN: "ADMIN",
     USER: "USER",
@@ -53,21 +54,24 @@ class AccessService {
     static signUp = async ({ name, email, password }) => {
         // try {
         // Check email is exsit ?
-        const holderUser = await userModel.findOne({ email }).lean() // lean để tăng tốc độ , giảm size trả về
+        const holderUser = await userModel.findOne({ user_email: email }).lean() // lean để tăng tốc độ , giảm size trả về
         if (holderUser) throw new ConflictError("User already exist!")
 
         const passwordHash = bcrypt.hashSync(password, 10)
-        console.log({ passwordHash })
 
         const newUser = await userModel.create({
-            name,
-            email,
-            password: passwordHash,
-            roles: RoleUser.USER,
+            user_name: name,
+            user_email: email,
+            user_password: passwordHash,
+            user_roles: RoleUser.USER,
+            email_verify_token: generateVerificationToken()
         });
 
         // If create user success
         if (newUser) {
+
+            await EmailService.sendEmail(newUser.user_email, newUser.email_verify_token)
+
             //Create PrivateKey and PublicKey
             const privateKey = crypto.randomBytes(60).toString('hex')
             const publicKey = crypto.randomBytes(60).toString('hex')
@@ -75,7 +79,7 @@ class AccessService {
             console.log({ privateKey }, { publicKey });
 
             // Create Token send to client
-            const tokens = await createTokenPair({ userId: newUser._id, email }, privateKey, publicKey);
+            const tokens = await createTokenPair({ userId: newUser._id, email, role: newUser.user_roles }, privateKey, publicKey);
             console.log("Created Token Success: ", tokens);
             // Save collection keyStore
             const keyStore = await KeyTokenService.createKeyToken({
@@ -88,7 +92,7 @@ class AccessService {
             if (!keyStore) throw new BadRequestError("Can't create Key store")
             return {
                 user: getInfoData({
-                    fields: ["_id", "name", "email"],
+                    fields: ["_id", "user_name", "user_email"],
                     object: newUser
                 }),
                 tokens
@@ -146,6 +150,19 @@ class AccessService {
         }
     }
 
+    static verifyEmailForUser = async ({ verifyCode }) => {
+        const filter = { email_verify_token: verifyCode }
+        const update = {
+            user_verify: true,
+            email_verify_token: generateVerificationToken() // tạo mới verify code
+        }
+        const foundUser = await userModel.findOneAndUpdate(filter, update, { new: true }).lean()
+        if (!foundUser) throw new BadRequestError("Invalid verification code")
+
+        return {
+            verify: "Successfully!"
+        }
+    }
 }
 
 module.exports = AccessService

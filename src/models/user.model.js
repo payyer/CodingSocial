@@ -5,53 +5,69 @@ const COLLECTION_NAME = "Users";
 
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema({
-    name: {
+    user_name: {
         type: String,
         required: true,
         index: true,
         trim: true,
         maxLength: 50
     },
-    email: {
+    user_roles: {
+        type: String,
+    },
+    user_avatar: {
+        type: String,
+    },
+    user_email: {
         type: String,
         required: true,
         unique: true,
         trim: true,
     },
-    verifyEmail: {
-        type: Boolean,
-        default: false,
-    },
-    password: {
+    user_password: {
         type: String,
         required: true,
     },
-    avatar: {
+    user_bio: {
+        type: String,
+    },
+    user_cv: {
+        type: String,
+    },
+    user_company: {
+        type: [String],
+    },
+
+    user_birthday: {
+        type: String,
+    },
+    user_address: {
         type: String,
         required: false,
         default: null
     },
-    region: {
+    user_city: {
         type: String,
         required: false,
         default: null
     },
-    city: {
+    user_country: {
         type: String,
         required: false,
         default: null
     },
-    address: {
-        type: String,
-        required: false,
-        default: null
+    user_verify: {
+        type: Boolean,
+        default: false,
     },
-    roles: {
-        type: Array,
-        default: [],
+    user_list_friend: {
+        type: [mongoose.Types.ObjectId],
     },
+    email_verify_token: {
+        type: String
+    }
 }, {
-    timeseries: true,
+    timestamps: true,
     collection: COLLECTION_NAME
 });
 

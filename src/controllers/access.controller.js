@@ -1,6 +1,7 @@
 const { CREATED, SuccessResponse } = require("../core/success.response")
 const AccessService = require("../services/access.service")
 
+
 class AccessController {
     signUp = async (req, res, next) => {
         console.log(`P::[signUP]::`, req.body)
@@ -26,6 +27,12 @@ class AccessController {
         new SuccessResponse({
             message: "Token refreshed successfully",
             metadata: await AccessService.handlerRefreshToken(req.body)
+        }).send(res)
+    }
+    verifyEmailForUser = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Verify your email successfull",
+            metadata: await AccessService.verifyEmailForUser(req.params)
         }).send(res)
     }
 }

@@ -6,7 +6,7 @@ const { asyncHandle } = require('../helpers/asyncHandler')
 const HEADER = {
     API_KEY: 'x-api-key',
     BEARER: 'bearer',
-    USER_CLIENT_ID: 'user-id'
+    USER_CLIENT_ID: 'user-id',
 }
 
 const createTokenPair = async (payload, privateKey, publicKey) => {
@@ -22,13 +22,13 @@ const createTokenPair = async (payload, privateKey, publicKey) => {
         })
 
         // Check token verify
-        JWT.verify(accessToken, publicKey, (error, decoded) => {
-            if (error) {
-                console.error("error verify::", error);
-            } else {
-                console.log("decode verify::", decoded);
-            }
-        });
+        // JWT.verify(accessToken, publicKey, (error, decoded) => {
+        //     if (error) {
+        //         console.error("error verify::", error);
+        //     } else {
+        //         console.log("decode verify::", decoded);
+        //     }
+        // });
 
         return { accessToken, refreshToken }
     } catch (error) {
