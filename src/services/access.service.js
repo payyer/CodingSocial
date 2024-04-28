@@ -114,6 +114,7 @@ class AccessService {
 
     static handlerRefreshToken = async ({ refreshToken }) => {
         // Check this token was use?
+        console.log("asdasdasd")
         const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
         // if refreshToken is exsit in dbs?
         // delete keyStore

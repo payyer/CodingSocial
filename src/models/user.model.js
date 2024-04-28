@@ -63,6 +63,44 @@ var userSchema = new mongoose.Schema({
     user_list_friend: {
         type: [mongoose.Types.ObjectId],
     },
+    user_display_settings: {
+        user_email: {
+            type: Boolean,
+            default: true
+        },
+        user_bio: {
+            type: Boolean,
+            default: true
+        },
+        user_cv: {
+            type: Boolean,
+            default: true
+        },
+        user_company: {
+            type: Boolean,
+            default: true
+        },
+        user_birthday: {
+            type: Boolean,
+            default: true
+        },
+        user_address: {
+            type: Boolean,
+            default: true
+        },
+        user_city: {
+            type: Boolean,
+            default: true
+        },
+        user_country: {
+            type: Boolean,
+            default: true
+        },
+        user_list_friend: {
+            type: Boolean,
+            default: true
+        },
+    },
     email_verify_token: {
         type: String
     }
