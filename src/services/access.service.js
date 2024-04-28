@@ -19,8 +19,10 @@ class AccessService {
         if (!user) throw new NotFoundError("Email not found!")
 
         // Compare password
-        const matchPassword = bcrypt.compareSync(password, user.password)
+        const matchPassword = bcrypt.compareSync(password, user.user_password)
         if (!matchPassword) throw new UnAuthorizedError("Password incorrect!")
+
+        if (!user.user_verify) throw new ForbiddenError("Email is not verified")
 
         // Create accesstoken and refrestoken
         const privateKey = crypto.randomBytes(64).toString('hex')
@@ -44,7 +46,7 @@ class AccessService {
 
         return {
             user: getInfoData({
-                fields: ["_id", "name", "email"],
+                fields: ["_id", "user_name", "user_email"],
                 object: user
             }),
             tokens

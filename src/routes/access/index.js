@@ -8,6 +8,7 @@ const router = express.Router()
 router.post('/user/login', asyncHandle(accessController.login))
 router.post('/user/signup', asyncHandle(accessController.signUp))
 router.get('/user/verify/:verifyCode', asyncHandle(accessController.verifyEmailForUser))
+
 // Authentication
 router.use(authentication)
 
