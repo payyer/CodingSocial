@@ -4,7 +4,7 @@ const compression = require("compression")
 const cors = require('cors')
 const helmet = require("helmet")
 const app = express()
-var cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
 
 // ----- Init middleware -----
 app.use(cors({ credentials: true, origin: 'http://localhost:5173' }))

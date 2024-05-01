@@ -16,7 +16,16 @@ var userSchema = new mongoose.Schema({
         type: String,
     },
     user_avatar: {
-        type: String,
+        public_id: {
+            type: String,
+            required: true,
+            default: null
+        },
+        url: {
+            type: String,
+            required: true,
+            default: null
+        }
     },
     user_email: {
         type: String,
@@ -30,9 +39,11 @@ var userSchema = new mongoose.Schema({
     },
     user_bio: {
         type: String,
+        default: null
     },
     user_cv: {
         type: String,
+        default: null
     },
     user_company: {
         type: [String],
@@ -40,6 +51,7 @@ var userSchema = new mongoose.Schema({
 
     user_birthday: {
         type: String,
+        default: null
     },
     user_address: {
         type: String,
