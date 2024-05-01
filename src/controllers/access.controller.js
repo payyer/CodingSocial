@@ -26,7 +26,7 @@ class AccessController {
     handlerRefreshToken = async (req, res, next) => {
         new SuccessResponse({
             message: "Token refreshed successfully",
-            metadata: await AccessService.handlerRefreshToken(req.body)
+            metadata: await AccessService.handlerRefreshToken(req.refreshToken)
         }).send(res)
     }
     verifyEmailForUser = async (req, res, next) => {

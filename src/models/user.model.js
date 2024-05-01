@@ -18,12 +18,10 @@ var userSchema = new mongoose.Schema({
     user_avatar: {
         public_id: {
             type: String,
-            required: true,
             default: null
         },
         url: {
             type: String,
-            required: true,
             default: null
         }
     },

@@ -31,6 +31,7 @@ const updateDetailProfileById = async (userId, body, isNew = true) => {
         user_name: body.user_name,
         user_company: body.user_company,
         user_bio: body.user_bio,
+        user_cv: body.user_cv,
         user_birthday: body.user_birthday,
         user_address: body.user_address,
         user_city: body.user_city,
