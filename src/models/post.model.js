@@ -12,18 +12,12 @@ var postSchema = new mongoose.Schema({
     },
     from_group: {
         type: String,
-        required: true,
     },
-    post_list_image: [
+    post_media: [
         {
             public_id: { type: String },
-            url: { type: String }
-        }
-    ],
-    post_list_video: [
-        {
-            public_id: { type: String },
-            url: { type: String }
+            secure_url: { type: String },
+            resource_type: { type: String }
         }
     ],
     post_content: {
@@ -36,6 +30,10 @@ var postSchema = new mongoose.Schema({
     post_shared: {
         type: Number,
         default: 0
+    },
+    post_type: {
+        type: String,
+        default: 'Public' // Private or Friend
     }
 }, {
     timestamps: true,
