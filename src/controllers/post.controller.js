@@ -12,6 +12,17 @@ class PostController {
             })
         }).send(res)
     }
+
+    increaseOrDecreaseLike = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Update post like successfully!",
+            metadata: await PostService.increaseOrDecreaseLike({
+                userId: req.user.userId,
+                postId: req.params.postId
+            })
+        }).send(res)
+    }
+
 }
 
 module.exports = new PostController()

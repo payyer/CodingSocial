@@ -9,6 +9,23 @@ class PostRepository {
             post_media: media ? media : null
         })
     }
+
+    increaseLike = async (postId) => {
+        return await postModel.findByIdAndUpdate(
+            { _id: postId },
+            { $inc: { post_emoji: 1 } },
+            { new: true }
+        ).select({ post_emoji: 1, _id: 0 })
+    }
+
+    decreaseLike = async (postId) => {
+        return await postModel.findByIdAndUpdate(
+            { _id: postId },
+            { $inc: { post_emoji: -1 } },
+            { new: true }
+        ).select({ post_emoji: 1, _id: 0 })
+    }
+
 }
 
 module.exports = new PostRepository()
