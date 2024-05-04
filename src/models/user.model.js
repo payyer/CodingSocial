@@ -73,6 +73,10 @@ var userSchema = new mongoose.Schema({
     user_list_friend: {
         type: [mongoose.Types.ObjectId],
     },
+    user_list_friend_request: {
+        type: Array,
+        ref: "friendRequest"
+    },
     user_display_settings: {
         user_email: {
             type: Boolean,

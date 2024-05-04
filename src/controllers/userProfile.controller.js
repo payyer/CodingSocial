@@ -31,6 +31,16 @@ class UserController {
             })
         }).send(res)
     }
+
+    sendFriendRequest = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Send friend request successfull!",
+            metadata: await UserService.sendFriendRequest({
+                senderId: req.user.userId,
+                receiverId: req.body.receiverId
+            })
+        }).send(res)
+    }
 }
 
 module.exports = new UserController()

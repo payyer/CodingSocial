@@ -1,4 +1,5 @@
-const { BadRequestError, ForbiddenError } = require("../core/error.reponse")
+const { ForbiddenError, NotFoundError } = require("../core/error.reponse")
+const friendRequestModel = require("../models/friendRequest.model")
 const { updateViewProfileById, updateDetailProfileById, updateUserAvatarById, findUserById } = require("../models/repository/user.repository")
 const userModel = require("../models/user.model")
 const cloudinary = require("../utils/cloudinary")
@@ -32,10 +33,23 @@ class UserService {
         const result = await cloudinary.uploader.upload(avatar.path, {
             folder: 'SocialMedia'
         })
-
-
-
         return await updateUserAvatarById(userId, result)
+    }
+
+    static sendFriendRequest = async ({ senderId, receiverId }) => {
+        const foundUserRecive = await userModel.findById(receiverId)
+        if (!foundUserRecive) throw new NotFoundError("Don't found user receiver")
+
+        const newFriendRequest = await friendRequestModel.create({
+            sender_id: senderId,
+            receiver_id: receiverId
+        })
+
+        await userModel.findByIdAndUpdate({ _id: receiverId }, {
+            $push: { user_list_friend_request: newFriendRequest }
+        })
+
+        return newFriendRequest
     }
 }
 

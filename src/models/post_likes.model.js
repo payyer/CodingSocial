@@ -4,7 +4,7 @@ const DOCUMENT_NAME = "Post_Like";
 const COLLECTION_NAME = "Post_Likes";
 
 // Declare the Schema of the Mongo model
-var postSchema = new mongoose.Schema({
+var post_likeSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         require: true,
@@ -21,4 +21,4 @@ var postSchema = new mongoose.Schema({
 });
 
 //Export the model
-module.exports = mongoose.model(DOCUMENT_NAME, postSchema);
+module.exports = mongoose.model(DOCUMENT_NAME, post_likeSchema);

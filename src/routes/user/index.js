@@ -12,5 +12,6 @@ router.use(authentication)
 router.put('/view', asyncHandle(UserController.updateViewProfile))
 router.put('/profile', asyncHandle(UserController.updateDetailProfile))
 router.put('/avatar', upload.single('avatar'), asyncHandle(UserController.updateAvatar))
+router.post('/sendFriendRequest', asyncHandle(UserController.sendFriendRequest))
 
 module.exports = router
