@@ -57,4 +57,5 @@ const updateUserAvatarById = async (userId, result, isNew = true) => {
     return await userModel.findOneAndUpdate(filter, update, { new: isNew }).select(select).lean()
 }
 
+
 module.exports = { updateViewProfileById, updateDetailProfileById, updateUserAvatarById, findUserById }

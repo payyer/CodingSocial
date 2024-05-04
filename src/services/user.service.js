@@ -36,6 +36,12 @@ class UserService {
         return await updateUserAvatarById(userId, result)
     }
 
+    static getAllFriendRequest = async ({ userId }) => {
+        return await friendRequestModel.find({ receiver_id: userId, }).select({
+            __v: 0
+        }).lean()
+    }
+
     static sendFriendRequest = async ({ senderId, receiverId }) => {
         const foundUserRecive = await userModel.findById(receiverId)
         if (!foundUserRecive) throw new NotFoundError("Don't found user receiver")
@@ -51,6 +57,54 @@ class UserService {
 
         return newFriendRequest
     }
+
+    static acceptFriendRequest = async ({ userId, friendRequestId }) => {
+        const foundFriendRequest = await friendRequestModel.findById(friendRequestId)
+
+        const foundUser = await userModel.findByIdAndUpdate({ _id: userId }, {
+            $push: { user_list_friend: foundFriendRequest.sender_id }
+        }, { new: true }).select({ user_list_friend: 1 }).lean()
+
+        await friendRequestModel.findByIdAndUpdate({ _id: friendRequestId }, {
+            status: "accepted"
+        }, { new: true })
+        return {
+            listFriend: foundUser
+        }
+    }
+
+    static rejectFriendRequest = async ({ userId, friendRequestId }) => {
+        const result = await friendRequestModel.findByIdAndUpdate({ _id: friendRequestId }, {
+            status: "rejected"
+        }, { new: true })
+        return {
+            result
+        }
+    }
+
+    static unfriend = async ({ userId, friendUserId }) => {
+        await userModel.findByIdAndUpdate({ _id: userId }, {
+            $pull: { user_list_friend: friendUserId }
+        }).lean()
+
+        const foundFriendRequset = await friendRequestModel.findOne({
+            sender_id: friendUserId,
+            receiver_id: userId
+        })
+
+        if (foundFriendRequset) {
+            const result = await friendRequestModel.findOneAndDelete({
+                sender_id: friendUserId, receiver_id: userId
+            }, { new: true }).lean()
+            return result
+        } else {
+            const result = await friendRequestModel.findOneAndDelete({
+                sender_id: userId, receiver_id: friendUserId
+            }, { new: true }).lean()
+            return result
+        }
+    }
+
 }
 
 module.exports = UserService

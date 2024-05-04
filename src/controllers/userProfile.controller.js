@@ -31,6 +31,14 @@ class UserController {
             })
         }).send(res)
     }
+    getAllFriendRequest = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Update Avatar successfull!",
+            metadata: await UserService.getAllFriendRequest({
+                userId: req.user.userId,
+            })
+        }).send(res)
+    }
 
     sendFriendRequest = async (req, res, next) => {
         new SuccessResponse({
@@ -38,6 +46,36 @@ class UserController {
             metadata: await UserService.sendFriendRequest({
                 senderId: req.user.userId,
                 receiverId: req.body.receiverId
+            })
+        }).send(res)
+    }
+
+    acceptFriendRequest = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Accept Friend Request successfull!",
+            metadata: await UserService.acceptFriendRequest({
+                userId: req.user.userId,
+                friendRequestId: req.body.friendRequestId
+            })
+        }).send(res)
+    }
+
+    rejectFriendRequest = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Accept Friend Request successfull!",
+            metadata: await UserService.rejectFriendRequest({
+                userId: req.user.userId,
+                friendRequestId: req.body.friendRequestId
+            })
+        }).send(res)
+    }
+
+    unfriend = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Accept Friend Request successfull!",
+            metadata: await UserService.unfriend({
+                userId: req.user.userId,
+                friendUserId: req.body.friendUserId
             })
         }).send(res)
     }

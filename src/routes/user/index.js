@@ -9,9 +9,13 @@ const upload = multer({ dest: 'uploads/' })
 const router = express.Router()
 
 router.use(authentication)
+router.get('/getAllFriendRequest', asyncHandle(UserController.getAllFriendRequest))
 router.put('/view', asyncHandle(UserController.updateViewProfile))
 router.put('/profile', asyncHandle(UserController.updateDetailProfile))
 router.put('/avatar', upload.single('avatar'), asyncHandle(UserController.updateAvatar))
 router.post('/sendFriendRequest', asyncHandle(UserController.sendFriendRequest))
+router.put('/acceptFriendRequest', asyncHandle(UserController.acceptFriendRequest))
+router.put('/rejectFriendRequest', asyncHandle(UserController.rejectFriendRequest))
+router.put('/unfriend', asyncHandle(UserController.unfriend))
 
 module.exports = router
