@@ -31,7 +31,6 @@ const updateDetailProfileById = async (userId, body, isNew = true) => {
         user_name: body.user_name,
         user_company: body.user_company,
         user_bio: body.user_bio,
-        user_cv: body.user_cv,
         user_birthday: body.user_birthday,
         user_address: body.user_address,
         user_city: body.user_city,
@@ -57,5 +56,20 @@ const updateUserAvatarById = async (userId, result, isNew = true) => {
     return await userModel.findOneAndUpdate(filter, update, { new: isNew }).select(select).lean()
 }
 
+const updateCvById = async (userId, cv, isNew = true) => {
+    const filter = { _id: userId }
+    const update = {
+        user_cv: {
+            public_id: cv.public_id,
+            url: cv.secure_url
+        }
+    }
+    const select = { user_cv: 1 }
+    return await userModel.findOneAndUpdate(filter, update, { new: isNew }).select(select).lean()
+}
 
-module.exports = { updateViewProfileById, updateDetailProfileById, updateUserAvatarById, findUserById }
+
+module.exports = {
+    updateViewProfileById, updateDetailProfileById, updateUserAvatarById,
+    findUserById, updateCvById
+}

@@ -13,6 +13,7 @@ router.get('/getAllFriendRequest', asyncHandle(UserController.getAllFriendReques
 router.put('/view', asyncHandle(UserController.updateViewProfile))
 router.put('/profile', asyncHandle(UserController.updateDetailProfile))
 router.put('/avatar', upload.single('avatar'), asyncHandle(UserController.updateAvatar))
+router.put('/cv', upload.single('cv'), asyncHandle(UserController.updateCV))
 router.post('/sendFriendRequest', asyncHandle(UserController.sendFriendRequest))
 router.put('/acceptFriendRequest', asyncHandle(UserController.acceptFriendRequest))
 router.put('/rejectFriendRequest', asyncHandle(UserController.rejectFriendRequest))

@@ -31,6 +31,17 @@ class UserController {
             })
         }).send(res)
     }
+
+    updateCV = async (req, res, next) => {
+        new SuccessResponse({
+            message: "Update Avatar successfull!",
+            metadata: await UserService.updateCV({
+                userId: req.user.userId,
+                file: req.file
+            })
+        }).send(res)
+    }
+
     getAllFriendRequest = async (req, res, next) => {
         new SuccessResponse({
             message: "Update Avatar successfull!",

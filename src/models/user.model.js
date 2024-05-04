@@ -40,8 +40,8 @@ var userSchema = new mongoose.Schema({
         default: null
     },
     user_cv: {
-        type: String,
-        default: null
+        public_id: { type: String },
+        url: { type: String }
     },
     user_company: {
         type: [String],

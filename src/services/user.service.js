@@ -1,6 +1,6 @@
 const { ForbiddenError, NotFoundError } = require("../core/error.reponse")
 const friendRequestModel = require("../models/friendRequest.model")
-const { updateViewProfileById, updateDetailProfileById, updateUserAvatarById, findUserById } = require("../models/repository/user.repository")
+const { updateViewProfileById, updateDetailProfileById, updateUserAvatarById, findUserById, updateCvById } = require("../models/repository/user.repository")
 const userModel = require("../models/user.model")
 const cloudinary = require("../utils/cloudinary")
 
@@ -34,6 +34,24 @@ class UserService {
             folder: 'SocialMedia'
         })
         return await updateUserAvatarById(userId, result)
+    }
+
+    static updateCV = async ({ userId, file }) => {
+        const foundUser = await findUserById(userId)
+        if (!foundUser) throw new ForbiddenError("You don't have permission to change another user's avatar.")
+
+        // Note: Need delete old CV before update new CV for user
+        if (foundUser.user_cv.public_id) {
+            cloudinary.uploader.destroy(foundUser.user_cv.public_id)
+                .then(result => console.log("Delete image on cloud", result))
+                .catch(error => console.log("Delete Image Error", error))
+        }
+
+        const result = await cloudinary.uploader.upload(file.path, {
+            folder: 'SocialMedia', resource_type: 'auto'
+        })
+
+        return await updateCvById(userId, result)
     }
 
     static getAllFriendRequest = async ({ userId }) => {
