@@ -6,8 +6,8 @@ const { asyncHandle } = require('../helpers/asyncHandler')
 const HEADER = {
     API_KEY: 'x-api-key',
     BEARER: 'bearer',
-    USER_CLIENT_ID: 'user-id',
-    REFRESH_TOKEN: 'x-refresh-token'
+    USER_CLIENT_ID: 'userId',
+    REFRESH_TOKEN: 'refreshToken'
 }
 
 const createTokenPair = async (payload, privateKey, publicKey) => {
@@ -38,15 +38,15 @@ const createTokenPair = async (payload, privateKey, publicKey) => {
     }
 }
 const authentication = asyncHandle(async (req, res, next) => {
-    const userId = req.headers[HEADER.USER_CLIENT_ID]
+    const userId = req.cookies[HEADER.USER_CLIENT_ID]
     if (!userId) throw new ForbiddenError("Invalid User Id Request")
 
     const keyStore = await KeyTokenService.findByUserId(userId)
     if (!keyStore) throw new NotFoundError("Not Found Key Store!")
 
-    if (req.headers[HEADER.REFRESH_TOKEN]) {
+    if (req.cookies[HEADER.REFRESH_TOKEN]) {
         try {
-            const refreshToken = req.headers[HEADER.REFRESH_TOKEN]
+            const refreshToken = req.cookies[HEADER.REFRESH_TOKEN]
             const decodedUser = JWT.verify(refreshToken, keyStore.privateKey)
             console.log({ decodedUser })
             // 5 -Check KeyStore with this user ID
@@ -60,7 +60,7 @@ const authentication = asyncHandle(async (req, res, next) => {
         }
     }
 
-    const accessToken = req.headers[HEADER.BEARER]
+    const accessToken = req.cookies[HEADER.BEARER]
     if (!accessToken) throw new ForbiddenError("Invalid AccessToken")
 
     try {

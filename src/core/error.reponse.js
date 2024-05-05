@@ -7,7 +7,7 @@ const StatusCode = {
 }
 
 const ReasonStatusCode = {
-    FORBIDEN: "Bad request error",
+    FORBIDEN: "FORBIDEN error",
     CONFLICT: "Conflict error",
     NOT_FOUND: "Not found!",
     UNAUTHORIZED: "Unauthorized!"
